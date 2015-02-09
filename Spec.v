@@ -26,3 +26,37 @@ Module Run.
     | Call command answer _ run => existT _ command answer :: trace run
     end.
 End Run.
+
+Module Temporal.
+  Module All.
+    Inductive t (P : Command.t -> Prop) : C.t -> Prop :=
+    | Ret : t P C.Ret
+    | Call : forall (c : Command.t) (h : Command.answer c -> C.t),
+      P c -> (forall a, t P (h a)) ->
+      t P (C.Call c h).
+  End All.
+
+  Module One.
+    Inductive t (P : Command.t -> Prop) : C.t -> Prop :=
+    | CallThis : forall (c : Command.t) (h : Command.answer c -> C.t),
+      P c ->
+      t P (C.Call c h)
+    | CallOther : forall (c : Command.t) (h : Command.answer c -> C.t),
+      (forall a, t P (h a)) ->
+      t P (C.Call c h).
+  End One.
+
+  Module Then.
+    Inductive t (P1 P2 : Command.t -> Prop) : C.t -> Prop :=
+    | Ret : t P1 P2 C.Ret
+    | Call : forall (c : Command.t) (h : Command.answer c -> C.t),
+      (forall a, t P1 P2 (h a)) ->
+      t P1 P2 (C.Call c h)
+    | CallThen : forall (c : Command.t) (h : Command.answer c -> C.t),
+      P1 c -> (forall a, One.t P2 (h a)) ->
+      t P1 P2 (C.Call c h).
+  End Then.
+End Temporal.
+
+Module CardBeforeMoney.
+End CardBeforeMoney.
