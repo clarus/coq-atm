@@ -12,8 +12,8 @@ Module Command.
   | CheckPIN (pin : N)
   | AskAmount
   | CheckAmount (amount : N)
-  | GiveAmount (amount : N)
   | GiveCard
+  | GiveAmount (amount : N)
   | ShowError (message : LString.t).
 
   (** The type of an answer for a command depends on the value of the command. *)
@@ -24,8 +24,8 @@ Module Command.
     | CheckPIN _ => bool (* If the PIN number is valid. *)
     | AskAmount => option N (* A number or cancellation. *)
     | CheckAmount _ => bool (* If the amount can be withdrawn. *)
-    | GiveAmount _ => bool (* If the money was given. *)
     | GiveCard => bool (* If the card was given. *)
+    | GiveAmount _ => bool (* If the money was given. *)
     | ShowError _ => unit (* Show an error message. *)
     end.
 End Command.
@@ -78,7 +78,7 @@ Module C.
       (at level 200, x ident, X at level 100, A at level 200, Y at level 200).
 
     (** Let ignoring the answer. *)
-    Notation "'do_let!' X 'in' Y" :=
+    Notation "'do!' X 'in' Y" :=
       (apply X (fun _ => Y))
       (at level 200, X at level 100, Y at level 200).
   End Notations.
