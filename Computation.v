@@ -32,19 +32,19 @@ End Command.
 
 (** Computations with I/Os. *)
 Module C.
-  (** A computation can either return a pure value, or do a system call and wait
+  (** A computation can either does nothing, or do a system call and wait
       for the answer to run another computation. *)
-  Inductive t (A : Type) : Type :=
-  | Ret : forall (x : A), t A
-  | Call : forall (command : Command.t), (Command.answer command -> t A) -> t A.
-  Arguments Ret {A} _.
-  Arguments Call {A} _ _.
+  Inductive t : Type :=
+  | Ret : t
+  | Call : forall (command : Command.t), (Command.answer command -> t) -> t.
+  Arguments Ret.
+  Arguments Call _ _.
 
   (** Some optional notations. *)
   Module Notations.
     (** A nicer notation for `Ret`. *)
-    Definition ret {A : Type} (x : A) : t A :=
-      Ret x.
+    Definition ret : t :=
+      Ret.
 
     (** We define an explicit apply function so that Coq does not try to expand
         the notations everywhere. *)
